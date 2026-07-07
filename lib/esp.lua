@@ -80,7 +80,7 @@ function ESPService:Destroy()
 end
 
 ESPService.ESPWatcher = RunService.RenderStepped:Connect(function()
-    for address, data in pairs(self.ESPList) do
+    for address, data in pairs(ESPService.ESPList) do
         local instance = data.Instance
         if not instance or not instance:IsDescendantOf(Workspace) then
             deleteESP(address)
