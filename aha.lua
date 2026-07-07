@@ -11,10 +11,8 @@ task.spawn(function()
 
             if rootPart then
                 local anomaly = kid:GetAttribute("Anomaly") or kid:GetAttribute("Skinwalker")
-	
-				if kid:GetAttribute("OriginalFace") == "rbxassetid://100401113256373" and not anomaly then
-					ESPService:Create(rootPart, "Headbanger", Color3.fromRGB(255, 255, 0))
-				elseif string.match(kid.Name, "Monster") then
+					
+				if string.match(kid.Name, "Monster") then
 					ESPService:Create(rootPart, kid.Name, Color3.fromRGB(255, 0, 0))
 				else
                 	ESPService:Create(rootPart, string.format("%s", kid.Name), anomaly and Color3.fromRGB(255, 0, 0) or Color3.new(1,1,1))
