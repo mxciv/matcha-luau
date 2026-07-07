@@ -108,7 +108,7 @@ ESPService.ESPWatcher = RunService.RenderStepped:Connect(function()
         local espName = data.EspName
         espName.Position = Vector2.new(
             screenPos.X,
-            screenPos.Y - espName.TextBounds.Y - self.Config.ESP_OFFSET
+            screenPos.Y - espName.TextBounds.Y - ESPService.Config.ESP_OFFSET
         )
 
         local espDist = data.EspDist
@@ -119,7 +119,7 @@ ESPService.ESPWatcher = RunService.RenderStepped:Connect(function()
 
             espDist.Position = Vector2.new(
                 screenPos.X,
-                espName.Position.Y + espName.TextBounds.Y + self.Config.ESP_GAP
+                espName.Position.Y + espName.TextBounds.Y + ESPService.Config.ESP_GAP
             )
             continue
         end
@@ -129,7 +129,7 @@ ESPService.ESPWatcher = RunService.RenderStepped:Connect(function()
 
         espDist.Position = Vector2.new(
             screenPos.X,
-            espName.Position.Y + espName.TextBounds.Y + self.Config.ESP_GAP
+            espName.Position.Y + espName.TextBounds.Y + ESPService.Config.ESP_GAP
         )
     end
 end)
