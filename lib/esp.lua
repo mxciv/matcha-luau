@@ -4,6 +4,7 @@ ESPService.__index = ESPService
 ESPService.Config = {
     ESP_OFFSET = 2,
     ESP_GAP = 6,
+    FONT_SIZE = 20,
     DEFAULT_COLOR = Color3.new(1,1,1)
 };
 
@@ -25,7 +26,7 @@ function ESPService:Create(object, name, color)
     espName.Color = color or self.Config.DEFAULT_COLOR
     espName.Position = Vector2.new(0, 0)
     espName.Text = name
-    espName.Size = 20
+    espName.Size = self.Config.FONT_SIZE
     espName.Center = true
     espName.Outline = true
     espName.Font = Drawing.Fonts.Monospace
@@ -37,7 +38,7 @@ function ESPService:Create(object, name, color)
     espDist.Color =  self.Config.DEFAULT_COLOR
     espDist.Position = Vector2.new(0, 25)
     espDist.Text = "[69 m]"
-    espDist.Size = 18
+    espDist.Size = self.Config.FONT_SIZE - 2
     espDist.Center = true
     espDist.Outline = true
     espDist.Font = Drawing.Fonts.Monospace
@@ -83,14 +84,14 @@ ESPService.ESPWatcher = RunService.RenderStepped:Connect(function()
     for address, data in pairs(ESPService.ESPList) do
         local instance = data.Instance
         if not instance or not instance:IsDescendantOf(Workspace) then
-            deleteESP(address)
+            ESPService:Delete(address)
             continue
         end
         
         local instancePos = instance.Position
 
         if not instancePos then
-            deleteESP(address)
+            ESPService:Delete(address)
             continue
         end
 
