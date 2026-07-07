@@ -7,7 +7,7 @@ ESPService.Config = {
     DEFAULT_COLOR = Color3.new(1,1,1)
 };
 
-local ESPService.ESPList = {}
+ESPService.ESPList = {}
 
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
