@@ -125,18 +125,24 @@ local function updatePatientESP()
     for address, data in pairs(patientActiveESP) do
         local part = data.Instance
 
-        if not part or not part:IsDescendantOf(Workspace) then
+        if not part then
             deletePatientESP(address)
             continue
         end
 
-        if not part.Position then
-            warn("Part %s doesn't have position", part.Parent.Name)
+        if not part:IsDescendantOf(Workspace) then
             deletePatientESP(address)
             continue
         end
 
-        local partPosition, onScreen = WorldToScreen(part.Position)
+        local partPosition = part.Position
+
+        if not partPosition then
+            deletePatientESP(address)
+            continue
+        end
+
+        local screnPosition, onScreen = WorldToScreen(partPosition)
 
         if not onScreen then
             data.EspDist.Visible = false
@@ -149,13 +155,13 @@ local function updatePatientESP()
         local distance = getDistanceFromPlayer(part.Position, 3)
 
         data.EspDist.Text = string.format("[%d m]", distance)
-        data.EspDist.Position = partPosition + Vector2.new(0, -10)
+        data.EspDist.Position = screnPosition + Vector2.new(0, -10)
         data.EspDist.Visible = true
 
-        data.EspName.Position = partPosition + Vector2.new(0, 10)
+        data.EspName.Position = screnPosition + Vector2.new(0, 10)
         data.EspName.Visible = true
 
-        data.EspMeds.Position = partPosition + Vector2.new(0, 35)
+        data.EspMeds.Position = screnPosition + Vector2.new(0, 35)
         data.EspMeds.Visible = (data.EspMeds.Text ~= "")
     end
 end
@@ -163,13 +169,12 @@ end
 -- Main Process
 local function updateMedicineInfo()
     for roomName, rooms in pairs(hospitalRooms) do
-        local report = rooms:FindFirstChild("Minigame") 
+        local medicines = rooms:FindFirstChild("Minigame") 
                 and rooms.Minigame:FindFirstChild("TV") 
                 and rooms.Minigame.TV:FindFirstChild("Screen") 
                 and rooms.Minigame.TV.Screen:FindFirstChild("UI") 
-                and rooms.Minigame.TV.Screen.UI:FindFirstChild("Report") 
-
-        local medicines = report:FindFirstChild("inv")
+                and rooms.Minigame.TV.Screen.UI:FindFirstChild("Report")
+                and rooms.Minigame.TV.Screen.UI.Report:FindFirstChild("inv")
 
         if medicines then
             local names = {}
@@ -185,11 +190,12 @@ local function updateMedicineInfo()
     end
 
     for _, data in pairs(patientActiveESP) do
-        if data.RoomName and not data.Instance.Parent:GetAttribute("Treated") then
-            data.EspMeds.Text = medicineCache[data.RoomName]
-        else
-			data.EspMeds.Text = ""
-		end
+        if not data.Instance.Parent:GetAttribute("Treated") or not data.Instance.Parent:GetAttribute("IsVisitor") then
+
+            if data.RoomName then
+                data.EspMeds.Text = medicineCache[data.RoomName]
+            end
+        end
     end
 end
 
@@ -232,6 +238,16 @@ local function initializeScanner(location, wait_time)
                 end
             end
             
+            -- Handle EyeMass
+            local EyeMass = Workspace.Rooms:FindFirstChild("EyeMass")
+
+            if EyeMass then
+                local part = EyeMass:FindFirstChild("Main")
+                if part and not patientActiveESP[part.Address] then
+                    processPatientESP(part, Color3.fromHex("#FF0000"), nil)
+                end
+            end
+
             updateMedicineInfo()
             task.wait(wait_time)
         end
